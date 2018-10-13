@@ -11,7 +11,7 @@ async function initAppView() {
     },
     views: [
       {
-        type: "image",
+        type: "image", 
         props: {
           src: "https://www.yahaha.cn.com/img/random.jpeg"
         },
