@@ -562,6 +562,14 @@ function showWebNode() {
 
 function showSampleNode() {
     const nodeList = $("nodeList").info
+    nodeList.map(obj => {
+        if (obj.status.text.indexOf('在线') >= 0) {
+            obj.status.textColor = $color("#23d160")
+        } else {
+            obj.status.textColor = $color("#ff3860")
+        }
+        return obj;
+    })
     $ui.push({
         props: {
             title: "节点列表"
@@ -583,7 +591,7 @@ function showSampleNode() {
                                 layout: (make, view) => {
                                     make.left.equalTo(view.super).offset(5);
                                     make.height.equalTo(25);
-                                    make.width.equalTo(80);
+                                    make.width.equalTo(70);
                                     make.centerY.equalTo(view.super);
                                 }
                             },
@@ -594,9 +602,9 @@ function showSampleNode() {
                                     autoFontSize: true
                                 },
                                 layout: (make, view) => {
-                                    make.left.equalTo(view.prev.right).offset(10);
+                                    make.left.equalTo(70);
                                     make.centerY.equalTo(view.super);
-                                    let width = $device.info.screen.width - 100;
+                                    let width = $device.info.screen.width - 80;
                                     make.width.equalTo(width);
                                 }
                             }
@@ -607,6 +615,7 @@ function showSampleNode() {
             }
         ]
     });
+
 }
 
 function showLoading(loadingText) {
