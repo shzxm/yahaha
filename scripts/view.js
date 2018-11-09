@@ -672,6 +672,24 @@ function renderUserView(userInfo) {
                             renderUserData()
                         }
                     }
+                }, {
+                    type: "button",
+                    props: {
+                        title: "复制订阅地址",
+                        font: $font(14)
+                    },
+                    layout: (make, view) => {
+                        make.right.equalTo(view.super).offset(-220);
+                        make.centerY.equalTo(view.super);
+                        make.width.equalTo(94);
+                    },
+                    events: {
+                        tapped: async sender => {
+                            let data = $("quanSubscribeBtn").info
+                            $clipboard.text = data.url
+                            $ui.toast("链接已复制");
+                        }
+                    }
                 }]
             }]
         })
