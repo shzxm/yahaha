@@ -77,7 +77,19 @@ function getCheckInfo(content) {
     }
     return infoList
 }
-
+function getNetFlow(content) {
+    const regex = /<span class="pull-right strong">((.|[\n\r])*?)<\/span>/g;;
+    let m;
+    let infoList = new Array();
+    while ((m = regex.exec(content)) !== null) {
+        // This is necessary to avoid infinite loops with zero-width matches
+        if (m.index === regex.lastIndex) {
+            regex.lastIndex++;
+        }
+        infoList.push(m[1])
+    }
+    return infoList;
+}
 function getSubscribe(content) {
     const regex = /\<span class="tage is-prelast is-warning is-sub mrb-no">((.|[\n\r])*?)<\/span>/mi
     let subscribeLink = regex.exec(content)[1]
@@ -91,16 +103,7 @@ function getSubscribe(content) {
     }
     return subscribes
 }
-function groupBy(objectArray, property) {
-    return objectArray.reduce(function (acc, obj) {
-        var key = obj[property];
-        if (!acc[key]) {
-            acc[key] = [];
-        }
-        acc[key].push(obj);
-        return acc;
-    }, {});
-}
+
 async function getNodeList() {
     let resp = await $http.get(`${Home}/user/node`);
     let data = resp.data;
@@ -149,7 +152,8 @@ function getUserInfo(data) {
     const dasboardList = getDashboardInfo(data)
     const checkInfo = getCheckInfo(data)
     const subscribes = getSubscribe(data)
-    const userInfo = { usernmae: username, dasboardList: dasboardList, checkInfo: checkInfo, subscribes: subscribes }
+    const netFlowInfo = getNetFlow(data)
+    const userInfo = { usernmae: username, dasboardList: dasboardList, checkInfo: checkInfo, subscribes: subscribes, netFlowInfo: netFlowInfo }
     return userInfo
 }
 
