@@ -1,8 +1,6 @@
 const _view = require('./view');
 const _data = require('./data');
 
-
-
 async function initAppView() {
   $ui.render({
     props: {
@@ -13,7 +11,7 @@ async function initAppView() {
       {
         type: "image",
         props: {
-          src: "https://www.yahaha.cn.com/img/random.jpeg"
+          src: `${_data.Home}/img/random.jpeg`
         },
         layout: $layout.fill
       },
@@ -44,7 +42,6 @@ async function initAppView() {
     _view.renderUserView(userInfo)
   }
 }
-
 
 module.exports = {
   initAppView: initAppView

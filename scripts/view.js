@@ -1,7 +1,6 @@
 const _data = require('./data');
-
-const HOMEEncode = 'aHR0cHM6Ly95YWhhaGEuY24uY29t'
-const Home = $text.base64Decode(HOMEEncode)
+// const HOMEEncode = 'aHR0cHM6Ly95YWhhaGEuY24uY29t'
+const Home = _data.Home
 function renderLogin() {
     $ui.render({
         props: {
@@ -238,7 +237,7 @@ function renderUserView(userInfo) {
                     bgcolor: $color("white")
                 },
                 layout: (make, view) => {
-                    make.height.equalTo(90);
+                    make.height.equalTo(75);
                     make.width.equalTo(view.super).offset(-30);
                     make.centerX.equalTo(view.super);
                     make.top.equalTo(view.prev.bottom).offset(10);
@@ -287,7 +286,7 @@ function renderUserView(userInfo) {
                     bgcolor: $color("white")
                 },
                 layout: (make, view) => {
-                    make.height.equalTo(90);
+                    make.height.equalTo(75);
                     make.width.equalTo(view.super).offset(-30);
                     make.centerX.equalTo(view.super);
                     make.top.equalTo(view.prev.bottom).offset(10);
@@ -328,23 +327,25 @@ function renderUserView(userInfo) {
                         make.left.equalTo(view.prev.right).offset(0);
                         make.width.equalTo(view.super).multipliedBy(0.5);
                     }
-                },
-                {
-                    type: "progress",
-                    props: {
-                        id: 'netflowProgress',
-                        smoothRadius: 10,
-                        trackColor: $color("#f7f7f7"),
-                        progressColor: $color("#fbb450")
-                    },
-                    layout: function (make, view) {
-                        make.top.equalTo(view.super).offset(75);
-                        make.left.equalTo(view.super).offset(20);
-                        make.right.equalTo(view.super).offset(20)
-                        make.width.equalTo(view.super).offset(-40);
-                        make.height.equalTo(5)
-                    }
-                }]
+                }
+                    /*,
+                     {
+                        type: "progress",
+                        props: {
+                            id: 'netflowProgress',
+                            smoothRadius: 10,
+                            trackColor: $color("#f7f7f7"),
+                            progressColor: $color("#fbb450")
+                        },
+                        layout: function (make, view) {
+                            make.top.equalTo(view.super).offset(75);
+                            make.left.equalTo(view.super).offset(20);
+                            make.right.equalTo(view.super).offset(20)
+                            make.width.equalTo(view.super).offset(-40);
+                            make.height.equalTo(5)
+                        }
+                    } */
+                ]
             }, {
                 type: "view",
                 props: {
@@ -716,7 +717,12 @@ async function renderUserData(userInfo) {
     $("userInfoDetailRight").text = `${userInfo.dasboardList[2].key}：${userInfo.dasboardList[2].value}\n${userInfo.dasboardList[3].key}：${userInfo.dasboardList[3].value}`
     $("netflowInfoDetailLeft").text = `总流量：${userInfo.netFlowInfo[0]}\n使用流量：${userInfo.netFlowInfo[1]}`
     $("netflowInfoDetailRight").text = `剩余流量：${userInfo.netFlowInfo[2]}\n可用天数：${userInfo.netFlowInfo[3]}`
-    $("netflowProgress").value = 1 - (userInfo.netFlowInfo[2].substring(0, userInfo.netFlowInfo[2].length - 2) / parseFloat(userInfo.netFlowInfo[0].substring(0, userInfo.netFlowInfo[0].length - 2)) * 1024)
+    // 单位换算
+    /* if (userInfo.netFlowInfo[0].slice(-2) !== userInfo.netFlowInfo[2].slice(-2)) {
+        if (userInfo.netFlowInfo[0].slice(-2) === 'TB') {
+            $("netflowProgress").value = 1 - (1 - (userInfo.netFlowInfo[2].substring(0, userInfo.netFlowInfo[2].length - 2) / parseFloat(userInfo.netFlowInfo[0].substring(0, userInfo.netFlowInfo[0].length - 2)) * 1024))
+        }
+    } */
     if (isToday(userInfo.checkInfo[1])) {
         $("checkinBtn").enabled = false
         $("checkinBtn").titleColor = $color("#95bdf8")
@@ -739,7 +745,7 @@ function showWebNode() {
             {
                 type: "web",
                 props: {
-                    url: "https://yahaha.cn.com/user/node"
+                    url: `${Home}/user/node`
                 },
                 layout: $layout.fill
             }

@@ -1,4 +1,4 @@
-const HOMEEncode = 'aHR0cHM6Ly95YWhhaGEuY24uY29t'
+const HOMEEncode = 'aHR0cHM6Ly93d3cueWFoYWhhLnVz'
 const Home = $text.base64Decode(HOMEEncode)
 
 async function userData() {
@@ -158,9 +158,12 @@ function getUserInfo(data) {
 }
 
 async function login(email, passwd) {
-    let resp = await $http.upload({
+    let resp = await $http.post({
         url: `${Home}/auth/login`,
-        form: {
+        header: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: {
             email: email,
             passwd: passwd
         }
@@ -208,5 +211,6 @@ module.exports = {
     getNodeList: getNodeList,
     resetport: resetport,
     updatepwd: updatepwd,
-    urlreset: urlreset
+    urlreset: urlreset,
+    Home: Home
 }
