@@ -5,7 +5,7 @@ function getLocalVersion() {
 }
 
 async function getRemoteVersion() {
-    var url = `https://github.com/xyranger/yahaha/raw/master/version.json?tmp=${Math.floor(Date.now() / 1000)}`;
+    var url = `https://raw.githubusercontent.com/xyranger/yahaha/master/version.json?tmp=${Math.floor(Date.now() / 1000)}`;
     var resp = await $http.get(url);
     let getVersion = resp.data.version
     if (!getVersion) {
@@ -16,7 +16,7 @@ async function getRemoteVersion() {
 }
 
 async function updateLocalBox() {
-    var url = `https://xteko.com/redir?name=yahaha&url=https://github.com/xyranger/yahaha/raw/master/.output/yahaha.box?tmp=${Math.floor(Date.now() / 1000)}`;
+    var url = `https://raw.githubusercontent.com/xyranger/yahaha/master/.output/yahaha.box?tmp=${Math.floor(Date.now() / 1000)}`;
     $http.download({
         url: url,
         handler: resp => {
