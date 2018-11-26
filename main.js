@@ -3,5 +3,5 @@ var update = require('./scripts/update')
 $app.autoKeyboardEnabled = true;
 $app.keyboardToolbarEnabled = true;
 
-await update.checkVersion();
+await update.checkVersion()
 await app.initAppView();
