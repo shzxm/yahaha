@@ -18,6 +18,27 @@ async function userData() {
     }
 }
 
+async function getUserInviteInfo() {
+    let resp = await $http.get(`${Home}/user/invite`);
+    const regex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    let m;
+    let result = ""
+    while ((m = regex.exec(resp.data)) !== null) {
+        // This is necessary to avoid infinite loops with zero-width matches
+        if (m.index === regex.lastIndex) {
+            regex.lastIndex++;
+        }
+
+        // The result can be accessed through the `m`-variable.
+        m.forEach((match, groupIndex) => {
+            if (match.indexOf(Home) >= 0) {
+                result = match
+            }
+        });
+    }
+    return result
+}
+
 function getUserNameBySpan(content) {
     const regex = /<span>([\s\S]*?)<\/span>/m;
     const array_matches = regex.exec(content);
@@ -209,6 +230,7 @@ module.exports = {
     logout: logout,
     checkin: checkin,
     getNodeList: getNodeList,
+    getUserInviteInfo: getUserInviteInfo,
     resetport: resetport,
     updatepwd: updatepwd,
     urlreset: urlreset,

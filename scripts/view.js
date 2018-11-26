@@ -275,7 +275,7 @@ function renderUserView(userInfo) {
                     },
                     layout: (make, view) => {
                         make.top.equalTo(view.prev.top);
-                        make.left.equalTo(view.prev.right).offset(0);
+                        make.left.equalTo(view.prev.right).offset(30);
                         make.width.equalTo(view.super).multipliedBy(0.5);
                     }
                 }]
@@ -324,7 +324,7 @@ function renderUserView(userInfo) {
                     },
                     layout: (make, view) => {
                         make.top.equalTo(view.prev.top);
-                        make.left.equalTo(view.prev.right).offset(0);
+                        make.left.equalTo(view.prev.right).offset(30);
                         make.width.equalTo(view.super).multipliedBy(0.5);
                     }
                 }
@@ -614,7 +614,7 @@ function renderUserView(userInfo) {
                 views: [{
                     type: "label",
                     props: {
-                        text: "操作",
+                        text: "重置",
                         font: $font("bold", 16)
                     },
                     layout: (make, view) => {
@@ -673,6 +673,61 @@ function renderUserView(userInfo) {
                             renderUserData()
                         }
                     }
+                }]
+            }, {
+                type: "view",
+                props: {
+                    clipsToBounds: false,
+                    bgcolor: $color("white")
+                },
+                layout: (make, view) => {
+                    make.top.equalTo(view.prev.bottom).offset(10);
+                    make.width.equalTo(view.super).offset(-30);
+                    make.centerX.equalTo(view.super);
+                    make.height.equalTo(50);
+                    shadow(view);
+                },
+                views: [{
+                    type: "label",
+                    props: {
+                        text: "复制",
+                        font: $font("bold", 16)
+                    },
+                    layout: (make, view) => {
+                        make.height.equalTo(view.super);
+                        make.left.equalTo(view.super).offset(20);
+                        make.centerY.equalTo(view.super);
+                    }
+                }, {
+                    type: "spinner",
+                    props: {
+                        loading: true,
+                        id: 'copyInviteBtnSpinner'
+                    },
+                    layout: function (make, view) {
+                        make.right.equalTo(view.super).offset(-20);
+                        make.centerY.equalTo(view.super);
+                    }
+                }, {
+                    type: "button",
+                    props: {
+                        title: "复制邀请链接",
+                        id: "copyInviteBtn",
+                        font: $font(14),
+                        hidden: true
+                    },
+                    layout: (make, view) => {
+                        make.right.equalTo(view.super).offset(-20);
+                        make.centerY.equalTo(view.super);
+                        make.width.equalTo(94);
+                    },
+                    events: {
+                        tapped: async sender => {
+                            let data = $("copyInviteBtn").info
+                            $clipboard.text = data
+                            $ui.toast("链接已复制");
+                        }
+                    }
                 }, {
                     type: "button",
                     props: {
@@ -680,7 +735,7 @@ function renderUserView(userInfo) {
                         font: $font(14)
                     },
                     layout: (make, view) => {
-                        make.right.equalTo(view.super).offset(-220);
+                        make.right.equalTo(view.super).offset(-120);
                         make.centerY.equalTo(view.super);
                         make.width.equalTo(94);
                     },
@@ -734,6 +789,10 @@ async function renderUserData(userInfo) {
     $("nodeList").info = nodeList
     $("nodesLoadingSpinner").hidden = true
     $("nodeList").hidden = false
+    const getUserInviteInfo = await _data.getUserInviteInfo()
+    $("copyInviteBtn").info = getUserInviteInfo
+    $("copyInviteBtnSpinner").hidden = true
+    $("copyInviteBtn").hidden = false
 }
 
 function showWebNode() {
