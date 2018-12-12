@@ -111,16 +111,38 @@ function getNetFlow(content) {
     }
     return infoList;
 }
-function getSubscribe(content) {
-    const regex = /\<span class="tage is-prelast is-warning is-sub mrb-no">((.|[\n\r])*?)<\/span>/mi
-    let subscribeLink = regex.exec(content)[1]
+function getSubscribe(content, subscribeType) {
+    const regex = /\<span class="tage is-prelast is-warning is-sub mrb-no">((.|[\n\r])*?)<\/span>/mig
+    let m;
+    let subscribeLink = ""
+    console.log(subscribeType)
+    while ((m = regex.exec(content)) !== null) {
+        // This is necessary to avoid infinite loops with zero-width matches
+        if (m.index === regex.lastIndex) {
+            regex.lastIndex++;
+        }
+
+        // The result can be accessed through the `m`-variable.
+        m.forEach((match, groupIndex) => {
+            if (groupIndex === 1) {
+                if (match.indexOf("?mu=0") >= 0 && subscribeType === 'ssr') {
+                    subscribeLink = match
+                } else if (match.indexOf("?is_ss=1") >= 0 && subscribeType === 'ss') {
+                    subscribeLink = match
+                }
+            }
+        });
+    }
+    console.log(subscribeLink)
     const base64subscribeLink = $text.base64Encode(subscribeLink)
     const subscribes = {
         url: subscribeLink,
         rocket: `Shadowrocket://add/sub://${base64subscribeLink}?remarks=yahaha`,
         rocketURLScheme: "Shadowrocket://",
         quan: `quantumult://configuration?server=${base64subscribeLink}`,
-        quanURLScheme: "quantumult://"
+        quanURLScheme: "quantumult://",
+        surge: `surge:///install-config?url=${$text.URLEncode(subscribeLink)}`,
+        surgeURLScheme: "surge://"
     }
     return subscribes
 }
@@ -165,6 +187,19 @@ nodeList = nodeList.map(node => {
 return nodeList; `
     })
 }
+
+function getSubscribeType(pageContent) {
+    const regex = /\<ul class="nav nav-list">((.|[\n\r])*?)<\/ul>/mi;
+    const result = regex.exec(pageContent)[1];
+    const regex1 = /<li class="active">((.|[\n\r])*?)<\/li>/mi;
+    const result1 = regex1.exec(result)[0];
+    if (result1.indexOf('#all_ssr') >= 0) {
+        return "ssr"
+    } else {
+        return "ss"
+    }
+    return result1
+}
 function getUserInfo(data) {
     //用户名称
     const username = getUserNameBySpan(data)
@@ -172,9 +207,10 @@ function getUserInfo(data) {
     // 用户基础信息
     const dasboardList = getDashboardInfo(data)
     const checkInfo = getCheckInfo(data)
-    const subscribes = getSubscribe(data)
+    const subscribeType = getSubscribeType(data);
+    const subscribes = getSubscribe(data, subscribeType)
     const netFlowInfo = getNetFlow(data)
-    const userInfo = { usernmae: username, dasboardList: dasboardList, checkInfo: checkInfo, subscribes: subscribes, netFlowInfo: netFlowInfo }
+    const userInfo = { usernmae: username, dasboardList: dasboardList, checkInfo: checkInfo, subscribes: subscribes, netFlowInfo: netFlowInfo, subscribeType: subscribeType }
     return userInfo
 }
 
@@ -222,8 +258,22 @@ async function urlreset() {
     });
     return resp.data;
 }
-
+async function toggleSubType(group) {
+    //3: SS
+    //1: SSR
+    let resp = await $http.post({
+        url: `${Home}/user/password`,
+        header: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: {
+            group: group
+        }
+    })
+    return resp.data;
+}
 module.exports = {
+    toggleSubType: toggleSubType,
     userData: userData,
     getUserInfo: getUserInfo,
     login: login,

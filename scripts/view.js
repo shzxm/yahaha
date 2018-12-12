@@ -134,7 +134,8 @@ function renderUserView(userInfo) {
 
         $ui.render({
             props: {
-                title: ""
+                title: "",
+                id: "box"
             },
             views: [{
                 type: "label",
@@ -424,127 +425,6 @@ function renderUserView(userInfo) {
                 views: [{
                     type: "label",
                     props: {
-                        text: "Quantumult",
-                        font: $font("bold", 16)
-                    },
-                    layout: (make, view) => {
-                        make.height.equalTo(view.super);
-                        make.left.equalTo(view.super).offset(20);
-                        make.centerY.equalTo(view.super);
-                    }
-                }, {
-                    type: "button",
-                    props: {
-                        title: "一键更新",
-                        id: "quanSubscribeBtn",
-                        font: $font(14)
-                    },
-                    layout: (make, view) => {
-                        make.right.equalTo(view.super).offset(-20);
-                        make.centerY.equalTo(view.super);
-                        make.width.equalTo(84);
-                    },
-                    events: {
-                        tapped: async sender => {
-                            let data = sender.info
-                            $app.openURL(data.quan)
-                        }
-                    }
-                }, {
-                    type: "button",
-                    props: {
-                        title: "复制并打开",
-                        font: $font(14)
-                    },
-                    layout: (make, view) => {
-                        make.right.equalTo(view.super).offset(-120);
-                        make.centerY.equalTo(view.super);
-                        make.width.equalTo(84);
-                    },
-                    events: {
-                        tapped: async sender => {
-                            let data = $("quanSubscribeBtn").info
-                            $clipboard.text = data.url
-                            $app.openURL(data.quanURLScheme)
-                        }
-                    }
-                }]
-            }, {
-                type: "view",
-                props: {
-                    clipsToBounds: false,
-                    bgcolor: $color("white")
-                },
-                layout: (make, view) => {
-                    make.top.equalTo(view.prev.bottom).offset(10);
-                    make.width.equalTo(view.super).offset(-30);
-                    make.centerX.equalTo(view.super);
-                    make.height.equalTo(50);
-                    shadow(view);
-                },
-                views: [{
-                    type: "label",
-                    props: {
-                        text: "Shadowrocket",
-                        font: $font("bold", 16)
-                    },
-                    layout: (make, view) => {
-                        make.height.equalTo(view.super);
-                        make.left.equalTo(view.super).offset(20);
-                        make.centerY.equalTo(view.super);
-                    }
-                }, {
-                    type: "button",
-                    props: {
-                        title: "一键更新",
-                        font: $font(14)
-                    },
-                    layout: (make, view) => {
-                        make.right.equalTo(view.super).offset(-20);
-                        make.centerY.equalTo(view.super);
-                        make.width.equalTo(84);
-                    },
-                    events: {
-                        tapped: async sender => {
-                            let data = $("quanSubscribeBtn").info
-                            $app.openURL(data.rocket)
-                        }
-                    }
-                }, {
-                    type: "button",
-                    props: {
-                        title: "复制并打开",
-                        font: $font(14)
-                    },
-                    layout: (make, view) => {
-                        make.right.equalTo(view.super).offset(-120);
-                        make.centerY.equalTo(view.super);
-                        make.width.equalTo(84);
-                    },
-                    events: {
-                        tapped: async sender => {
-                            let data = $("quanSubscribeBtn").info
-                            $clipboard.text = data.url
-                            $app.openURL(data.rocketURLScheme)
-                        }
-                    }
-                }]
-            }, {
-                type: "view",
-                props: {
-                    clipsToBounds: false,
-                    bgcolor: $color("white")
-                },
-                layout: (make, view) => {
-                    make.top.equalTo(view.prev.bottom).offset(10);
-                    make.width.equalTo(view.super).offset(-30);
-                    make.centerX.equalTo(view.super);
-                    make.height.equalTo(50);
-                    shadow(view);
-                },
-                views: [{
-                    type: "label",
-                    props: {
                         text: "节点列表",
                         font: $font("bold", 16)
                     },
@@ -747,6 +627,258 @@ function renderUserView(userInfo) {
                         }
                     }
                 }]
+            }, {
+                type: "view",
+                props: {
+                    clipsToBounds: false,
+                    id: "toggleView",
+                    hidden: true
+                    // bgcolor: $color("red")
+                },
+                layout: (make, view) => {
+                    make.top.equalTo(view.prev.bottom).offset(10);
+                    make.width.equalTo(180)
+                    make.centerX.equalTo(view.super);
+                    make.height.equalTo(50);
+                },
+                views: [{
+                    type: "label",
+                    props: {
+                        text: "SSR",
+                        font: $font("bold", 23),
+                        color: $color("white")
+                    },
+                    layout: (make, view) => {
+                        make.centerY.equalTo(view.super);
+                        make.left.equalTo(0);
+                    }
+                }, {
+                    type: "switch",
+                    props: {
+                        id: "toggle"
+                    },
+                    layout: (make, view) => {
+                        make.centerY.equalTo(view.super);
+                        make.centerX.equalTo(view.super);
+                    },
+                    events: {
+                        changed: async sender => {
+                            if (!sender.hidden) {
+                                const subType = sender.on ? 3 : 1
+                                console.log(subType)
+                                const result = await _data.toggleSubType(subType)
+                                if (result.ret) {
+                                    if (subType === 1) {
+                                        $ui.toast("已切换为SSR");
+                                    } else {
+                                        $ui.toast("已切换为SS");
+                                    }
+                                    renderUserData()
+                                } else {
+                                    $ui.alert(result.msg)
+                                }
+                            }
+                        }
+                    }
+                }, {
+                    type: "label",
+                    props: {
+                        text: "SS",
+                        font: $font("bold", 23),
+                        color: $color("white")
+                    },
+                    layout: (make, view) => {
+                        make.centerY.equalTo(view.super);
+                        make.right.equalTo(-15)
+                    }
+                }]
+            }, {
+                type: "view",
+                props: {
+                    id: "quantumultView",
+                    hidden: true,
+                    clipsToBounds: false,
+                    bgcolor: $color("white")
+                },
+                layout: (make, view) => {
+                    make.top.equalTo(view.prev.bottom).offset(10);
+                    make.width.equalTo(view.super).offset(-30);
+                    make.centerX.equalTo(view.super);
+                    make.height.equalTo(50);
+                    shadow(view);
+                },
+                views: [{
+                    type: "label",
+                    props: {
+                        text: "Quantumult",
+                        font: $font("bold", 16)
+                    },
+                    layout: (make, view) => {
+                        make.height.equalTo(view.super);
+                        make.left.equalTo(view.super).offset(20);
+                        make.centerY.equalTo(view.super);
+                    }
+                }, {
+                    type: "button",
+                    props: {
+                        title: "一键更新",
+                        id: "quanSubscribeBtn",
+                        font: $font(14)
+                    },
+                    layout: (make, view) => {
+                        make.right.equalTo(view.super).offset(-20);
+                        make.centerY.equalTo(view.super);
+                        make.width.equalTo(84);
+                    },
+                    events: {
+                        tapped: async sender => {
+                            let data = sender.info
+                            $app.openURL(data.quan)
+                        }
+                    }
+                }, {
+                    type: "button",
+                    props: {
+                        title: "复制并打开",
+                        font: $font(14)
+                    },
+                    layout: (make, view) => {
+                        make.right.equalTo(view.super).offset(-120);
+                        make.centerY.equalTo(view.super);
+                        make.width.equalTo(84);
+                    },
+                    events: {
+                        tapped: async sender => {
+                            let data = $("quanSubscribeBtn").info
+                            $clipboard.text = data.url
+                            $app.openURL(data.quanURLScheme)
+                        }
+                    }
+                }]
+            }, {
+                type: "view",
+                props: {
+                    id: "shadowrocketView",
+                    hidden: true,
+                    clipsToBounds: false,
+                    bgcolor: $color("white")
+                },
+                layout: (make, view) => {
+                    make.top.equalTo(view.prev.bottom).offset(10);
+                    make.width.equalTo(view.super).offset(-30);
+                    make.centerX.equalTo(view.super);
+                    make.height.equalTo(50);
+                    shadow(view);
+                },
+                views: [{
+                    type: "label",
+                    props: {
+                        text: "Shadowrocket",
+                        font: $font("bold", 16)
+                    },
+                    layout: (make, view) => {
+                        make.height.equalTo(view.super);
+                        make.left.equalTo(view.super).offset(20);
+                        make.centerY.equalTo(view.super);
+                    }
+                }, {
+                    type: "button",
+                    props: {
+                        title: "一键更新",
+                        font: $font(14)
+                    },
+                    layout: (make, view) => {
+                        make.right.equalTo(view.super).offset(-20);
+                        make.centerY.equalTo(view.super);
+                        make.width.equalTo(84);
+                    },
+                    events: {
+                        tapped: async sender => {
+                            let data = $("quanSubscribeBtn").info
+                            $app.openURL(data.rocket)
+                        }
+                    }
+                }, {
+                    type: "button",
+                    props: {
+                        title: "复制并打开",
+                        font: $font(14)
+                    },
+                    layout: (make, view) => {
+                        make.right.equalTo(view.super).offset(-120);
+                        make.centerY.equalTo(view.super);
+                        make.width.equalTo(84);
+                    },
+                    events: {
+                        tapped: async sender => {
+                            let data = $("quanSubscribeBtn").info
+                            $clipboard.text = data.url
+                            $app.openURL(data.rocketURLScheme)
+                        }
+                    }
+                }]
+            }, {
+                type: "view",
+                props: {
+                    id: "surgeView",
+                    hidden: true,
+                    clipsToBounds: false,
+                    bgcolor: $color("white")
+                },
+                layout: (make, view) => {
+                    make.top.equalTo(view.prev.bottom).offset(10);
+                    make.width.equalTo(view.super).offset(-30);
+                    make.centerX.equalTo(view.super);
+                    make.height.equalTo(50);
+                    shadow(view);
+                },
+                views: [{
+                    type: "label",
+                    props: {
+                        text: "Surge",
+                        font: $font("bold", 16)
+                    },
+                    layout: (make, view) => {
+                        make.height.equalTo(view.super);
+                        make.left.equalTo(view.super).offset(20);
+                        make.centerY.equalTo(view.super);
+                    }
+                }, {
+                    type: "button",
+                    props: {
+                        title: "一键更新",
+                        font: $font(14)
+                    },
+                    layout: (make, view) => {
+                        make.right.equalTo(view.super).offset(-20);
+                        make.centerY.equalTo(view.super);
+                        make.width.equalTo(84);
+                    },
+                    events: {
+                        tapped: async sender => {
+                            let data = $("quanSubscribeBtn").info
+                            $app.openURL(data.surge)
+                        }
+                    }
+                }, {
+                    type: "button",
+                    props: {
+                        title: "复制并打开",
+                        font: $font(14)
+                    },
+                    layout: (make, view) => {
+                        make.right.equalTo(view.super).offset(-120);
+                        make.centerY.equalTo(view.super);
+                        make.width.equalTo(84);
+                    },
+                    events: {
+                        tapped: async sender => {
+                            let data = $("quanSubscribeBtn").info
+                            $clipboard.text = data.url
+                            $app.openURL(data.surgeURLScheme)
+                        }
+                    }
+                }]
             }]
         })
         renderUserData(userInfo)
@@ -781,6 +913,20 @@ async function renderUserData(userInfo) {
     if (isToday(userInfo.checkInfo[1])) {
         $("checkinBtn").enabled = false
         $("checkinBtn").titleColor = $color("#95bdf8")
+    }
+    $("toggle").on = userInfo.subscribeType === "ss"
+    $("toggleView").hidden = false
+    $("quantumultView").hidden = userInfo.subscribeType === "ss"
+    $("shadowrocketView").hidden = userInfo.subscribeType === "ss"
+    $("surgeView").hidden = userInfo.subscribeType === "ssr"
+    if (!$("surgeView").hidden) {
+        $("surgeView").updateLayout(function (make, view) {
+            make.top.equalTo(view.prev.bottom).offset(-100);
+        })
+    }else{
+        $("surgeView").updateLayout(function (make, view) {
+            make.top.equalTo(view.prev.bottom).offset(10);
+        })
     }
     $("checkinBtn").hidden = false
     $("checkinfolab").text = `Korok种子：${userInfo.checkInfo[0]}\n\n上次签到时间：${userInfo.checkInfo[1]}\n\n英雄之魂：${userInfo.checkInfo[2]}`
