@@ -664,6 +664,10 @@ function renderUserView(userInfo) {
                     events: {
                         changed: async sender => {
                             if (!sender.hidden) {
+       showLoading();
+       $("quantumultView").hidden=true;
+                              $("shadowrocketView").hidden=true;
+                             $("surgeView").hidden=true; 
                                 const subType = sender.on ? 3 : 1
                                 console.log(subType)
                                 const result = await _data.toggleSubType(subType)
@@ -921,7 +925,7 @@ async function renderUserData(userInfo) {
     $("surgeView").hidden = userInfo.subscribeType === "ssr"
     if (!$("surgeView").hidden) {
         $("surgeView").updateLayout(function (make, view) {
-            make.top.equalTo(view.prev.bottom).offset(-100);
+            make.top.equalTo(view.prev.bottom).offset(-110);
         })
     }else{
         $("surgeView").updateLayout(function (make, view) {
