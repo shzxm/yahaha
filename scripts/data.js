@@ -1,4 +1,4 @@
-const HOMEEncode = 'aHR0cHM6Ly93d3cueWFoYWhhLnVz'
+const HOMEEncode = 'aHR0cHM6Ly93d3cueWFoYWhhLmNuLmNvbQ=='
 const Home = $text.base64Decode(HOMEEncode)
 
 async function userData() {
