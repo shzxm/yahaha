@@ -31,7 +31,7 @@ async function initAppView() {
   const userInfo = await _data.userData()
   _view.hideLoding()
   if (userInfo === null) {
-    if (!$cache.get("userEmail")) {
+    if (!$cache.get("userPasswd")) {
       $("body").remove()
       _view.renderLogin()
     } else {

@@ -263,6 +263,27 @@ function renderUserView(userInfo) {
                         make.left.equalTo(view.super).offset(20);
                     }
                 }, {
+                    type: "button",
+                    props: {
+                        hidden: true,
+                        id: 'signOutBtn',
+                        icon: $icon("015", null, $size(20, 20)),
+                        bgcolor: $color("clear")
+                    },
+                    layout: function (make, view) {
+                        make.right.equalTo(view.super).offset(-10);
+                        make.top.equalTo(view.super).offset(5);
+                    }, events: {
+                        tapped: async sender => {
+                            showLoading('正在注销...')
+                            await _data.logout();
+                            $cache.set("userPasswd", '');
+                            hideLoding()
+                            $("body").remove();
+                            renderLogin();
+                        }
+                    }
+                }, {
                     type: "label",
                     props: {
                         font: $font(14),
@@ -941,6 +962,7 @@ async function renderUserData(userInfo) {
         })
     }
     $("checkinBtn").hidden = false
+    $("signOutBtn").hidden = false
     $("checkinfolab").text = `Korok种子：${userInfo.checkInfo[0]}\n\n上次签到时间：${userInfo.checkInfo[1]}\n\n英雄之魂：${userInfo.checkInfo[2]}`
     $("quanSubscribeBtn").info = userInfo.subscribes
     const nodeList = await _data.getNodeList()
@@ -1063,7 +1085,7 @@ function showLoading(loadingText) {
         }, {
             type: "label",
             props: {
-                text: "Loading...",
+                text: loadingText,
                 font: $font("bold", 16)
             },
             layout: (make, view) => {
