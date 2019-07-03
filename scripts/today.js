@@ -32,7 +32,6 @@ async function renderView() {
         let res = await _data.login($cache.get("userEmail"), $cache.get("userPasswd"));
         if (res.ret === 1) {
             userInfo = await _data.userData();
-            $keyboard.insert(userInfo.subscribeType);
             if (userInfo.subscribeType === "ss") {
                 buttons = ["个人信息", "Surge托管", "Clash配置", "邀请链接", "签到"];
             }
