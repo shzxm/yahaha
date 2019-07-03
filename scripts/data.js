@@ -3,7 +3,8 @@ const Home = $text.base64Decode(HOMEEncode)
 
 async function userData() {
     try {
-        let resp = await $http.get(`${Home}/user/`);
+        let resp = await $http.get({ url: `${Home}/user/`, header: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36" } });
+        console.log(resp.response.headers);
         let data = resp.data;
         let userInfo = getUserInfo(data);
         if (userInfo === null) {
@@ -115,6 +116,7 @@ function getSubscribe(content, subscribeType) {
     const regex = /\<span class="tage is-prelast is-warning is-sub mrb-no">((.|[\n\r])*?)<\/span>/mig
     let m;
     let subscribeLink = ""
+    let clashLink = ""
     console.log(subscribeType)
     while ((m = regex.exec(content)) !== null) {
         // This is necessary to avoid infinite loops with zero-width matches
@@ -129,14 +131,18 @@ function getSubscribe(content, subscribeType) {
                     subscribeLink = match
                 } else if (match.indexOf("?is_ss=1") >= 0 && subscribeType === 'ss') {
                     subscribeLink = match
+                } else if (match.indexOf("?clash=1") >= 0 && subscribeType === 'ss') {
+                    clashLink = match
                 }
             }
         });
     }
     console.log(subscribeLink)
+    console.log(clashLink)
     const base64subscribeLink = $text.base64Encode(subscribeLink)
     const subscribes = {
         url: subscribeLink,
+        clashurl: clashLink,
         rocket: `Shadowrocket://add/sub://${base64subscribeLink}?remarks=yahaha`,
         rocketURLScheme: "Shadowrocket://",
         quan: `quantumult://configuration?server=${base64subscribeLink}`,

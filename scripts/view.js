@@ -912,6 +912,50 @@ function renderUserView(userInfo) {
                         }
                     }
                 }]
+            }, {
+                type: "view",
+                props: {
+                    id: "clashView",
+                    hidden: true,
+                    clipsToBounds: false,
+                    bgcolor: $color("white")
+                },
+                layout: (make, view) => {
+                    make.top.equalTo(view.prev.bottom).offset(10);
+                    make.width.equalTo(view.super).offset(-30);
+                    make.centerX.equalTo(view.super);
+                    make.height.equalTo(50);
+                    shadow(view);
+                },
+                views: [{
+                    type: "label",
+                    props: {
+                        text: "Clash",
+                        font: $font("bold", 16)
+                    },
+                    layout: (make, view) => {
+                        make.height.equalTo(view.super);
+                        make.left.equalTo(view.super).offset(20);
+                        make.centerY.equalTo(view.super);
+                    }
+                }, {
+                    type: "button",
+                    props: {
+                        title: "复制",
+                        font: $font(14)
+                    },
+                    layout: (make, view) => {
+                        make.right.equalTo(view.super).offset(-20);
+                        make.centerY.equalTo(view.super);
+                        make.width.equalTo(84);
+                    },
+                    events: {
+                        tapped: async sender => {
+                            let data = $("quanSubscribeBtn").info
+                            $clipboard.text = data.clashurl
+                        }
+                    }
+                }]
             }]
         })
         renderUserData(userInfo)
@@ -952,6 +996,7 @@ async function renderUserData(userInfo) {
     $("quantumultView").hidden = userInfo.subscribeType === "ss"
     $("shadowrocketView").hidden = userInfo.subscribeType === "ss"
     $("surgeView").hidden = userInfo.subscribeType === "ssr"
+    $("clashView").hidden = userInfo.subscribeType === "ssr"
     if (!$("surgeView").hidden) {
         $("surgeView").updateLayout(function (make, view) {
             make.top.equalTo(view.prev.bottom).offset(-110);
